@@ -10,7 +10,7 @@ for (let i = 0; i < openModalClassList.length; i++) {
   openModalClassList[i].addEventListener('click', (e) => {
     e.preventDefault()
     let eventId = parseInt(e.currentTarget.id.replace('event-', ''))
-    openModal(eventId)
+    openModal(eventId,i)
   }, false)
 }
 
@@ -21,11 +21,12 @@ for (var i = 0; i < closeModalClassList.length; i++) {
 overlay.addEventListener('click', closeModal)
 
 
-async function openModal(eventId) {
+async function openModal(eventId,index) {
   try {
     const url = '/api/getModalInfo.php?eventId=' + eventId
     const res = await fetch(url)
     const event = await res.json()
+    console.log(event)
     let modalHTML = `
       <h2 class="text-md font-bold mb-3">${event.name}</h2>
       <p class="text-sm">${event.date}（${event.day_of_week}）</p>
@@ -51,12 +52,22 @@ async function openModal(eventId) {
             -->
           </div>
           <div class="flex mt-5">
+          `
+          const testTrue = document.querySelectorAll(".test_true");
+          const testFalse = document.querySelectorAll(".test_false");
+          if(testTrue[index].firstElementChild.classList.contains("hidden_true") == true){
+            modalHTML += `
             <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId})">参加する</button>
-            <!-- 
             <button class="flex-1 bg-gray-300 py-2 mx-3 rounded-3xl text-white text-lg font-bold">参加しない</button>
-            -->
           </div>
         `
+          }else if(testFalse[index].firstElementChild.classList.contains("hidden_false") == true){
+            modalHTML += `
+            <button class="flex-1 bg-gray-300 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId})">参加する</button>
+            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold">参加しない</button>
+          </div>
+        `
+          }
         break;
       case 1:
         modalHTML += `
