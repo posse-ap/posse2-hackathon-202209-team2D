@@ -55,8 +55,8 @@ if (isset($_POST["submit"])) {
         <?php if (isset($msg)) : ?>
           <h3 class="text-red-400 my-3"><?php echo $msg; ?></h3>
         <?php endif; ?>
-        <input type="text" name="email" placeholder="メールアドレス" class="w-full p-4 text-sm mb-3">
-        <input type="password" name="pass" placeholder="パスワード" class="w-full p-4 text-sm mb-3">
+        <input type="text" name="email" placeholder="メールアドレス" class="w-full p-4 text-sm mb-3" required>
+        <input type="password" name="pass" placeholder="パスワード" class="w-full p-4 text-sm mb-3" required>
         <!-- <label class="inline-block mb-6">
           <input type="checkbox" checked>
           <span class="text-sm">ログイン状態を保持する</span>
@@ -64,10 +64,10 @@ if (isset($_POST["submit"])) {
         <input type="submit" name="submit" value="ログイン" class="cursor-pointer w-full p-3 text-md text-white bg-blue-400 rounded-3xl bg-gradient-to-r from-blue-600 to-blue-300">
       </form>
       <div class="text-center text-xs text-gray-400 mt-6">
-        <a href="/">パスワードを忘れた方はこちら</a>
+        <a href="reset.php">パスワードを忘れた方はこちら</a>
       </div>
     </div>
   </main>
 </body>
 
-</html>
+</html> 
