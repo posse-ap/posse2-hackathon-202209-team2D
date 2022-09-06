@@ -44,7 +44,7 @@ function get_day_of_week ($w) {
   <main class="bg-gray-100">
     <div class="w-full mx-auto p-5">
     <p class="ml-5 my-5" >ようこそ <?= $_SESSION['name'] ?> さん</p>
-      <!-- 
+      
       <div id="filter" class="mb-8">
         <h2 class="text-sm font-bold mb-3">フィルター</h2>
         <div class="flex">
@@ -54,7 +54,6 @@ function get_day_of_week ($w) {
           <a href="" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">未回答</a>
         </div>
       </div>
-      -->
       <div id="events-list">
         <div class="flex justify-between items-center mb-3">
           <h2 class="text-sm font-bold">一覧</h2>
@@ -65,9 +64,16 @@ function get_day_of_week ($w) {
           $start_date = strtotime($event['start_at']);
           $end_date = strtotime($event['end_at']);
           $day_of_week = get_day_of_week(date("w", $start_date));
+          $event_id = $event['id'];
+          $stmt = $db->prepare("SELECT * FROM event_attendance LEFT JOIN events ON event_attendance.event_id = events.id LEFT JOIN users ON event_attendance.user_id = users.id where event_id = '$event_id'");
+          $stmt->execute();
+          $events_users = $stmt->fetchAll();
           ?>
           <div class="modal-open bg-white mb-3 p-4 flex justify-between rounded-md shadow-md cursor-pointer" id="event-<?php echo $event['id']; ?>">
             <div>
+              <?php foreach ($events_users as $event_user) : ?>
+                <p><?= $event_user['name']; ?></p>
+              <?php endforeach; ?>
               <h3 class="font-bold text-lg mb-2"><?php echo $event['name'] ?></h3>
               <p><?php echo date("Y年m月d日（${day_of_week}）", $start_date); ?></p>
               <p class="text-xs text-gray-600">
