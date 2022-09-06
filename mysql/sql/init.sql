@@ -86,6 +86,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `login_pass`, `slack_id`, `github_id`) VALUES
 (1, 'かしけん', 'kashiken@kashiken', '$2y$10$7EYUohG.DqNb.tLpvvub9esviI3baz3y/p01YsmD/cRaKUS6/ZdQG', 'U0258AY7KBR', 'kashiken4869');
+(2, 'かれん', 'karen@kk', '$2y$10$7EYUohG.DqNb.tLpvvub9esviI3baz3y/p01YsmD/cRaKUS6/ZdQG', 'U0258AY7KBR', 'karen-kk');
+(3, 'ポンタ', 'ponta@p', '$2y$10$7EYUohG.DqNb.tLpvvub9esviI3baz3y/p01YsmD/cRaKUS6/ZdQG', 'U0258AY7KBR', 'ponta10');
 
 --
 -- ダンプしたテーブルのインデックス
