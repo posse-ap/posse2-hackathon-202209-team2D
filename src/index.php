@@ -1,5 +1,13 @@
 <?php
 require('dbconnect.php');
+session_start();
+
+
+//ログインされていない場合は強制的にログインページにリダイレクト
+if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
+    header("Location: auth/login/index.php");
+    exit();
+}
 
 $stmt = $db->query('SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id GROUP BY events.id');
 $events = $stmt->fetchAll();
@@ -27,16 +35,15 @@ function get_day_of_week ($w) {
       <div class="h-full">
         <img src="img/header-logo.png" alt="" class="h-full">
       </div>
-      <!-- 
       <div>
-        <a href="/auth/login" class="text-white bg-blue-400 px-4 py-2 rounded-3xl bg-gradient-to-r from-blue-600 to-blue-200">ログイン</a>
-      </div>
-      -->
+              <a class="text-white bg-blue-400 px-4 py-2 rounded-3xl bg-gradient-to-r from-blue-600 to-blue-200" href="auth/login/logout.php">ログアウト</a>
+      </div>     
     </div>
   </header>
 
   <main class="bg-gray-100">
     <div class="w-full mx-auto p-5">
+    <p class="ml-5 my-5" >ようこそ <?= $_SESSION['name'] ?> さん</p>
       <!-- 
       <div id="filter" class="mb-8">
         <h2 class="text-sm font-bold mb-3">フィルター</h2>
