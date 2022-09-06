@@ -10,7 +10,7 @@ if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
 }
 
 $today = date("Y-m-d");
-$stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at <= '" . $today . "' GROUP BY events.id,events.name,events.start_at,events.end_at,event_attendance.id ORDER BY events.start_at ASC" );
+$stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at >= '" . $today . "' GROUP BY events.id,events.name,events.start_at,events.end_at,event_attendance.id ORDER BY events.start_at ASC" );
 $stmt->execute();
 $events = $stmt->fetchAll();
 
@@ -32,7 +32,7 @@ function get_day_of_week ($w) {
 </head>
 
 <body>
-  <header class="h-16">
+  <!-- <header class="h-16">
     <div class="flex justify-between items-center w-full h-full mx-auto pl-2 pr-5">
       <div class="h-full">
         <img src="img/header-logo.png" alt="" class="h-full">
@@ -41,12 +41,12 @@ function get_day_of_week ($w) {
               <a class="text-white bg-blue-400 px-4 py-2 rounded-3xl bg-gradient-to-r from-blue-600 to-blue-200" href="auth/login/logout.php">ログアウト</a>
       </div>     
     </div>
-  </header>
+  </header> -->
 
   <main class="bg-gray-100">
     <div class="w-full mx-auto p-5">
     <p class="ml-5 my-5" >ようこそ <?= $_SESSION['name'] ?> さん</p>
-      <!-- 
+      
       <div id="filter" class="mb-8">
         <h2 class="text-sm font-bold mb-3">フィルター</h2>
         <div class="flex">
@@ -56,7 +56,6 @@ function get_day_of_week ($w) {
           <a href="" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">未回答</a>
         </div>
       </div>
-      -->
       <div id="events-list">
         <div class="flex justify-between items-center mb-3">
           <h2 class="text-sm font-bold">一覧</h2>
@@ -67,9 +66,25 @@ function get_day_of_week ($w) {
           $start_date = strtotime($event['start_at']);
           $end_date = strtotime($event['end_at']);
           $day_of_week = get_day_of_week(date("w", $start_date));
+          $event_id = $event['id'];
+          $stmt = $db->prepare("SELECT * FROM event_attendance LEFT JOIN events ON event_attendance.event_id = events.id LEFT JOIN users ON event_attendance.user_id = users.id where event_id = '$event_id' AND status = 1");
+          $stmt->execute();
+          $events_users = $stmt->fetchAll();
+
+          $stmt = $db->prepare("SELECT * FROM event_attendance LEFT JOIN events ON event_attendance.event_id = events.id LEFT JOIN users ON event_attendance.user_id = users.id where event_id = '$event_id' AND status = 2");
+          $stmt->execute();
+          $events_nousers = $stmt->fetchAll();
           ?>
           <div class="modal-open bg-white mb-3 p-4 flex justify-between rounded-md shadow-md cursor-pointer" id="event-<?php echo $event['id']; ?>">
             <div>
+            <h2 class="text-lg font-semibold">参加者</h2>
+              <?php foreach ($events_users as $event_user) : ?>
+                <p><?= $event_user['name']; ?></p>
+              <?php endforeach; ?>
+              <h2 class="text-lg font-semibold">不参加者</h2>
+              <?php foreach ($events_nousers as $event_nouser) : ?>
+                <p><?= $event_nouser['name']; ?></p>
+              <?php endforeach; ?>
               <h3 class="font-bold text-lg mb-2"><?php echo $event['name'] ?></h3>
               <p><?php echo date("Y年m月d日（${day_of_week}）", $start_date); ?></p>
               <p class="text-xs text-gray-600">
@@ -122,3 +137,4 @@ function get_day_of_week ($w) {
 </body>
 
 </html>
+
