@@ -13,8 +13,13 @@ $today = date("Y-m-d");
 // 参加/不参加/未回答の分類→未参加のみあとで書き加える
 $status = filter_input(INPUT_GET, 'status');
 if (isset($status)) {
-  $stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at <= '" . $today . "' AND event_attendance.user_id = ? AND event_attendance.status = ? GROUP BY events.id ORDER BY events.start_at ASC" );
-  $stmt->execute(array($_SESSION['user_id'], $status));
+  if($_GET["status"] == "undefined"){
+    $stmt = $db->prepare("SELECT * FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id NOT IN(SELECT event_id FROM event_attendance where user_id = ?) ORDER BY events.start_at ASC" );
+    $stmt->execute(array($_SESSION['user_id']));
+  }else{
+    $stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at <= '" . $today . "' AND event_attendance.user_id = ? AND event_attendance.status = ? GROUP BY events.id ORDER BY events.start_at ASC" );
+    $stmt->execute(array($_SESSION['user_id'], $status));
+  }
 }else{
   $stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at <= '" . $today . "' GROUP BY events.id ORDER BY events.start_at ASC" );
   $stmt->execute();
@@ -76,7 +81,7 @@ $to   = strtotime("now");
           <a href="/index.php" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-blue-600 text-white">全て</a>
           <a href="/index.php/?status=1" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">参加</a>
           <a href="/index.php/?status=2" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">不参加</a>
-          <a href="" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">未回答</a>
+          <a href="/index.php/?status=undefined" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">未回答</a>
         </div>
       </div>
       <div id="events-list">
@@ -102,23 +107,22 @@ $to   = strtotime("now");
           ?>
           <div class="modal-open bg-white mb-3 p-4 flex justify-between rounded-md shadow-md cursor-pointer" id="event-<?php echo $event['id']; ?>">
             <div>
-            <h2 class="text-lg font-semibold">参加者</h2>
-              <div class="test_true">
-            <?php foreach ($events_users as $event_user) : 
-              ?>
-                <?php if($event_user['user_id'] == $user_id) :?>
-                <input type="hidden" class="hidden_true">
-                <?php endif; ?>
-                <p><?= $event_user['name']; ?></p>
-              <?php endforeach; ?>
-              <input type="hidden">
-              <h2 class="text-lg font-semibold">不参加者</h2>
+            <h2 class="text-lg font-semibold">不参加者</h2>
               <div class="test_false">
-              <?php foreach ($events_nousers as $event_nouser) : ?>
+            <?php foreach ($events_nousers as $event_nouser) : 
+              ?>
                 <?php if($event_nouser['user_id'] == $user_id) :?>
                 <input type="hidden" class="hidden_false">
-                <?php endif;?>
+                <?php endif; ?>
                 <p><?= $event_nouser['name']; ?></p>
+              <?php endforeach; ?>
+              <h2 class="text-lg font-semibold">参加者</h2>
+              <div class="test_true">
+              <?php foreach ($events_users as $event_user) : ?>
+                <?php if($event_user['user_id'] == $user_id) :?>
+                <input type="hidden" class="hidden_true">
+                <?php endif;?>
+                <p><?= $event_user['name']; ?></p>
               <?php endforeach; ?>
               <input type="hidden">
               </div>
@@ -146,7 +150,7 @@ $to   = strtotime("now");
                  
                 <?php endif; ?>
               </div>
-              <p class="text-sm"><span class="text-xl"><?php echo $event['total_participants']; ?></span>人参加 ></p>
+              <p class="text-sm"><span class="text-xl count"></span>人参加 ></p>
             </div>
           </div>
         <?php endforeach; ?>
@@ -174,8 +178,16 @@ $to   = strtotime("now");
   <script src="/js/main.js"></script>
   <script>
     const answer = document.querySelectorAll('.answer');
+    const count = document.querySelectorAll('.count');
+
 for (let i = 0; i < openModalClassList.length; i++) {
-  console.log((testTrue[i].firstElementChild));
+if(testTrue[i].firstElementChild.classList.contains("hidden_true") == true){
+    let counter = (testTrue[i].childElementCount) - 2 ;
+    count[i].insertAdjacentHTML('beforeend', counter); 
+  }else{
+    let counter = (testTrue[i].childElementCount) -1;
+    count[i].insertAdjacentHTML('beforeend', counter);
+  }
 if(testTrue[i].firstElementChild.classList.contains("hidden_true") == true){
   let answerHTML = `
   <p class="text-sm font-bold text-green-400">参加</p>`
