@@ -2,7 +2,6 @@
 require('dbconnect.php');
 session_start();
 
-
 //ログインされていない場合は強制的にログインページにリダイレクト
 if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
     header("Location: auth/login/index.php");
@@ -14,10 +13,16 @@ $stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end
 $stmt->execute();
 $events = $stmt->fetchAll();
 
+$user_id = $_SESSION['user_id'];
+$stmt = $db->prepare("SELECT * FROM event_attendance LEFT JOIN events ON event_attendance.event_id = events.id LEFT JOIN users ON event_attendance.user_id = users.id where user_id = '$user_id' AND status = 1");
+$stmt->execute();
+$events_own = $stmt->fetchAll();
+
 function get_day_of_week ($w) {
   $day_of_week_list = ['日', '月', '火', '水', '木', '金', '土'];
   return $day_of_week_list["$w"];
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -78,13 +83,23 @@ function get_day_of_week ($w) {
           <div class="modal-open bg-white mb-3 p-4 flex justify-between rounded-md shadow-md cursor-pointer" id="event-<?php echo $event['id']; ?>">
             <div>
             <h2 class="text-lg font-semibold">参加者</h2>
-              <?php foreach ($events_users as $event_user) : ?>
+            <div class="test_true">
+            <?php foreach ($events_users as $event_user) : ?>
+                <?php if($event_user['user_id'] == $user_id) :?>
+                <input type="hidden" class="hidden_true">
+                <?php endif;?>
                 <p><?= $event_user['name']; ?></p>
               <?php endforeach; ?>
               <h2 class="text-lg font-semibold">不参加者</h2>
+              <div class="test_false">
               <?php foreach ($events_nousers as $event_nouser) : ?>
+                <?php if($event_nouser['user_id'] == $user_id) :?>
+                <input type="hidden" class="hidden_false">
+                <?php endif;?>
                 <p><?= $event_nouser['name']; ?></p>
               <?php endforeach; ?>
+              </div>
+            </div>
               <h3 class="font-bold text-lg mb-2"><?php echo $event['name'] ?></h3>
               <p><?php echo date("Y年m月d日（${day_of_week}）", $start_date); ?></p>
               <p class="text-xs text-gray-600">
