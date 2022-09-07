@@ -31,6 +31,9 @@ function get_day_of_week ($w) {
   return $day_of_week_list["$w"];
 }
 
+date_default_timezone_set('Asia/Tokyo');
+$to   = strtotime("now");   
+
 ?>
 
 <!DOCTYPE html>
@@ -63,6 +66,10 @@ function get_day_of_week ($w) {
       <div id="filter" class="mb-8">
         <h2 class="text-sm font-bold mb-3">フィルター</h2>
         <div class="flex">
+          <!-- <form action="index.php" method="post">
+          <input type="hidden" value="1">
+          <input type="submit" value="">
+          </form> -->
           <a href="/index.php" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-blue-600 text-white">全て</a>
           <a href="/index.php/?status=1" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">参加</a>
           <a href="/index.php/?status=2" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">不参加</a>
@@ -77,6 +84,9 @@ function get_day_of_week ($w) {
         <?php foreach ($events as $event) : ?>
           <?php
           $start_date = strtotime($event['start_at']);
+          $diff = $start_date - $to;
+          $deadline = floor($diff/86400) . '日';
+          // echo $diff;
           $end_date = strtotime($event['end_at']);
           $day_of_week = get_day_of_week(date("w", $start_date));
           $event_id = $event['id'];
@@ -91,13 +101,14 @@ function get_day_of_week ($w) {
           <div class="modal-open bg-white mb-3 p-4 flex justify-between rounded-md shadow-md cursor-pointer" id="event-<?php echo $event['id']; ?>">
             <div>
             <h2 class="text-lg font-semibold">参加者</h2>
-            <div class="test_true">
+              <div class="test_true">
             <?php foreach ($events_users as $event_user) : ?>
                 <?php if($event_user['user_id'] == $user_id) :?>
                 <input type="hidden" class="hidden_true">
-                <?php endif;?>
                 <p><?= $event_user['name']; ?></p>
+                <?php endif; ?>
               <?php endforeach; ?>
+              <input type="hidden">
               <h2 class="text-lg font-semibold">不参加者</h2>
               <div class="test_false">
               <?php foreach ($events_nousers as $event_nouser) : ?>
@@ -106,6 +117,7 @@ function get_day_of_week ($w) {
                 <?php endif;?>
                 <p><?= $event_nouser['name']; ?></p>
               <?php endforeach; ?>
+              <input type="hidden">
               </div>
             </div>
               <h3 class="font-bold text-lg mb-2"><?php echo $event['name'] ?></h3>
@@ -115,20 +127,20 @@ function get_day_of_week ($w) {
               </p>
             </div>
             <div class="flex flex-col justify-between text-right">
-              <div>
+              <div class="answer">
                 <?php if ($event['id'] % 3 === 1) : ?>
                   <!--
                   <p class="text-sm font-bold text-yellow-400">未回答</p>
                   <p class="text-xs text-yellow-400">期限 <?php echo date("m月d日", strtotime('-3 day', $end_date)); ?></p>
                   -->
                 <?php elseif ($event['id'] % 3 === 2) : ?>
-                  <!-- 
-                  <p class="text-sm font-bold text-gray-300">不参加</p>
-                  -->
+                  
+                  <!-- <p class="text-sm font-bold text-gray-300">不参加</p> -->
+                 
                 <?php else : ?>
-                  <!-- 
-                  <p class="text-sm font-bold text-green-400">参加</p>
-                  -->
+                  
+                  <!-- <p class="text-sm font-bold text-green-400">参加</p> -->
+                 
                 <?php endif; ?>
               </div>
               <p class="text-sm"><span class="text-xl"><?php echo $event['total_participants']; ?></span>人参加 ></p>
@@ -157,6 +169,28 @@ function get_day_of_week ($w) {
   </div>
 
   <script src="/js/main.js"></script>
+  <script>
+    const answer = document.querySelectorAll('.answer');
+for (let i = 0; i < openModalClassList.length; i++) {
+  console.log((testTrue[i].firstElementChild));
+if(testTrue[i].firstElementChild.classList.contains("hidden_true") == true){
+  let answerHTML = `
+  <p class="text-sm font-bold text-green-400">参加</p>`
+  answer[i].insertAdjacentHTML('beforeend', answerHTML);
+}else if(testFalse[i].firstElementChild.classList.contains("hidden_false") == true){
+  let answerHTML = `
+  <p class="text-sm font-bold text-gray-300">不参加</p>
+  `
+  answer[i].insertAdjacentHTML('beforeend', answerHTML);
+}else{
+  let answerHTML = `
+  <p class="text-sm font-bold text-yellow-400">未回答</p>
+  <p class="text-xs text-yellow-400">期限<?= $deadline ;?></p>
+  `
+  answer[i].insertAdjacentHTML('beforeend', answerHTML);
+}
+}
+  </script>
 </body>
 
 </html>
