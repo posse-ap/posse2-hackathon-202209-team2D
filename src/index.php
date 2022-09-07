@@ -8,6 +8,12 @@ if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
     exit();
 }
 
+// 参加/不参加/未回答の分類→あとで書き加える
+$status = filter_input(INPUT_GET, 'status');
+// if (!isset($month_id)) {
+//   $status_sql
+// }
+
 $today = date("Y-m-d");
 $stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at <= '" . $today . "' GROUP BY events.id,events.name,events.start_at,events.end_at,event_attendance.id ORDER BY events.start_at ASC" );
 $stmt->execute();
@@ -55,9 +61,9 @@ function get_day_of_week ($w) {
       <div id="filter" class="mb-8">
         <h2 class="text-sm font-bold mb-3">フィルター</h2>
         <div class="flex">
-          <a href="" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-blue-600 text-white">全て</a>
-          <a href="" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">参加</a>
-          <a href="" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">不参加</a>
+          <a href="/index.php" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-blue-600 text-white">全て</a>
+          <a href="/index.php/?status=1" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">参加</a>
+          <a href="/index.php/?status=2" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">不参加</a>
           <a href="" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">未回答</a>
         </div>
       </div>

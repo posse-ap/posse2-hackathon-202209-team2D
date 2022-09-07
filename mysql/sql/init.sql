@@ -78,7 +78,7 @@ CREATE TABLE `users` (
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `login_pass` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `slack_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `github_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+  `github_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 
 --
