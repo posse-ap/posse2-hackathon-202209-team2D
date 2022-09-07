@@ -14,7 +14,7 @@ $today = date("Y-m-d");
 $status = filter_input(INPUT_GET, 'status');
 if (isset($status)) {
   if($_GET["status"] == "undefined"){
-    $stmt = $db->prepare("SELECT * FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id NOT IN(SELECT event_id FROM event_attendance where user_id = ?) ORDER BY events.start_at ASC" );
+    $stmt = $db->prepare("SELECT * FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id NOT IN(SELECT event_id FROM event_attendance where user_id = ?) WHERE events.start_at >= '" . $today . "' ORDER BY events.start_at ASC" );
     $stmt->execute(array($_SESSION['user_id']));
   }else{
     $stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at >= '" . $today . "' AND event_attendance.user_id = ? AND event_attendance.status = ? GROUP BY events.id ORDER BY events.start_at ASC" );
@@ -34,8 +34,7 @@ function get_day_of_week ($w) {
   $day_of_week_list = ['日', '月', '火', '水', '木', '金', '土'];
   return $day_of_week_list["$w"];
 }
-date_default_timezone_set('Asia/Tokyo');
-$to   = strtotime("now");   
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -84,8 +83,9 @@ $to   = strtotime("now");
           <h2 class="text-sm font-bold">一覧</h2>
         </div>
 
-        <?php foreach ($events as $event) : ?>
-          <?php
+        <?php foreach ($events as $event) : 
+          date_default_timezone_set('Asia/Tokyo');
+          $to   = strtotime("now");   
           $start_date = strtotime($event['start_at']);
           $diff = $start_date - $to;
           $deadline = floor($diff/86400) . '日';
@@ -104,25 +104,6 @@ $to   = strtotime("now");
           <div class="modal-open bg-white mb-3 p-4 flex justify-between rounded-md shadow-md cursor-pointer" id="event-<?php echo $event['id']; ?>">
             <div>
             <!-- <h2 class="text-lg font-semibold">不参加者</h2> -->
-              <div class="test_false" style="display: none;">
-            <?php foreach ($events_nousers as $event_nouser) : ?>
-                <?php if($event_nouser['user_id'] == $user_id) :?>
-                <input type="hidden" class="hidden_false">
-                <?php endif; ?>
-                <p><?= $event_nouser['name']; ?></p>
-              <?php endforeach; ?>
-              <input type="hidden">
-              <h2 class="text-lg font-semibold">参加者</h2>
-              <div class="test_true">
-              <?php foreach ($events_users as $event_user) : ?>
-                <?php if($event_user['user_id'] == $user_id) :?>
-                <input type="hidden" class="hidden_true">
-                <?php endif;?>
-                <p><?= $event_user['name']; ?></p>
-              <?php endforeach; ?>
-              <input type="hidden">
-              </div>
-            </div>
               <h3 class="font-bold text-lg mb-2"><?php echo $event['name'] ?></h3>
               <p><?php echo date("Y年m月d日（${day_of_week}）", $start_date); ?></p>
               <p class="text-xs text-gray-600">
@@ -131,20 +112,18 @@ $to   = strtotime("now");
             </div>
             <div class="flex flex-col justify-between text-right">
               <div class="answer">
-                <?php if ($event['id'] % 3 === 1) : ?>
-                  <!--
-                  <p class="text-sm font-bold text-yellow-400">未回答</p>
-                  <p class="text-xs text-yellow-400">期限 <?php echo date("m月d日", strtotime('-3 day', $end_date)); ?></p>
-                  -->
-                <?php elseif ($event['id'] % 3 === 2) : ?>
-                  
-                  <!-- <p class="text-sm font-bold text-gray-300">不参加</p> -->
-                 
-                <?php else : ?>
-                  
-                  <!-- <p class="text-sm font-bold text-green-400">参加</p> -->
-                 
-                <?php endif; ?>
+                <?php foreach ($events_users as $event_user) : ?>
+                <?php if($event_user['user_id'] == $user_id) :?>
+                <p class="text-sm font-bold text-green-400 done true">参加</p>
+                <?php endif ;?>
+                <?php endforeach; ?>
+
+                <?php foreach ($events_nousers as $event_nouser) : ?>
+                  <?php if($event_nouser['user_id'] == $user_id) :?>
+                <p class="text-sm font-bold text-gray-300 done false">不参加</p>
+                <?php endif ;?>
+                <? endforeach; ?>
+                <p class="hidden deadline text-xs text-yellow-400">期限 <?= date("m月d日", strtotime('-3 day', $end_date));;?><p>
               </div>
               <a class="text-sm click-acord"><span class="text-xl count"></span>人参加 ></a>
               <div class="none" style="display: none;">
@@ -153,6 +132,14 @@ $to   = strtotime("now");
                 <input type="hidden" class="hidden_true">
                 <?php endif;?>
                 <p><?= $event_user['name']; ?></p>
+              <?php endforeach; ?>
+              </div>
+              <div class="none_false" style="display: none;">
+              <?php foreach ($events_nousers as $event_nouser) : ?>
+              <?php if($event_nouser['user_id'] == $user_id) :?>
+                <input type="hidden" class="hidden_false">
+                <?php endif;?>
+                <p><?= $event_nouser['name']; ?></p>
               <?php endforeach; ?>
               </div>
             </div>
@@ -194,6 +181,7 @@ const answer = document.querySelectorAll('.answer');
 const count = document.querySelectorAll('.count');
     const [...clickAcords] = document.querySelectorAll('.click-acord');
     const [...nones] = document.querySelectorAll('.none');
+    const [...none_false] = document.querySelectorAll('.none_false');
     const container = document.querySelector('.modal-container');
 
 for (let i = 0; i < openModalClassList.length; i++) {
@@ -227,7 +215,7 @@ async function openModal(eventId,index) {
       <hr class="my-4">
       <p class="text-sm modal-acord"><span class="text-xl">${count[index].innerHTML}</span>人参加 ></p>
       <div class="modal-none" style="display:none;">
-        ${testTrue[index].innerHTML}
+        ${nones[index].innerHTML}
       </div>
     `
       // let clicks = document.querySelector('.clickAcord');
@@ -237,26 +225,29 @@ async function openModal(eventId,index) {
     switch (0) {
       case 0:
         modalHTML += `
-          <div class="text-center mt-6">
-            <!--
+          <div class="text-center mt-6 hidden">
             <p class="text-lg font-bold text-yellow-400">未回答</p>
-            <p class="text-xs text-yellow-400">期限 ${event.deadline}</p>
-            -->
+            <p class="text-xs text-yellow-400 deadline">期限 ${event.deadline}</p>
           </div>
           <div class="flex mt-5">
           `
-          if(testTrue[index].firstElementChild.classList.contains("hidden_true") == true){
+          if(answer[index].firstElementChild.classList.contains('true') == true) {
             modalHTML += `
-            <button class="flex-1 bg-gray-300 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId})" disabled>参加する</button>
-            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold">参加しない</button>
+            <button class="flex-1 bg-gray-300 py-2 mx-3 rounded-3xl text-white text-lg font-bold" disabled>参加する</button>
+            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId},'update2')">参加しない</button>
           </div>
         `
-          }else if(testFalse[index].firstElementChild.classList.contains("hidden_false") == true){
+          }else if(answer[index].firstElementChild.classList.contains('false') == true){
             modalHTML += `
-            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId})">参加する</button>
+            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId},'update1')">参加する</button>
             <button class="flex-1 bg-gray-300 py-2 mx-3 rounded-3xl text-white text-lg font-bold" disabled>参加しない</button>
           </div>
         `
+          }else{
+            modalHTML += `
+            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId},'insert')">参加する</button>
+            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId},'delete')">参加しない</button>
+          </div>`
           }
         break;
       case 1:
@@ -302,10 +293,11 @@ function toggleModal() {
   body.classList.toggle('modal-active')
 }
 
-async function participateEvent(eventId) {
+async function participateEvent(eventId,status) {
   try {
     let formData = new FormData();
     formData.append('eventId', eventId)
+    formData.append('status', status)
     const url = '/api/postEventAttendance.php'
     await fetch(url, {
       method: 'POST',
@@ -316,11 +308,13 @@ async function participateEvent(eventId) {
       }
       return res.text();
     })
+    location.reload();
     closeModal()
   } catch (error) {
     console.log(error)
   }
 }
+
 
 for (let i = 0; i < openModalClassList.length; i++) {
   clickAcords[i].addEventListener('click',function(e){
@@ -334,35 +328,45 @@ for (let i = 0; i < openModalClassList.length; i++) {
       clickAcords[i] = nones[i].style.display = "none"
     }
   })
-if(testTrue[i].firstElementChild.classList.contains("hidden_true") == true){
-  let answerHTML = `
-  <p class="text-sm font-bold text-green-400">参加</p>`
-  answer[i].insertAdjacentHTML('beforeend', answerHTML);
-}else if(testFalse[i].firstElementChild.classList.contains("hidden_false") == true){
-  let answerHTML = `
-  <p class="text-sm font-bold text-gray-300">不参加</p>
-  `
-  answer[i].insertAdjacentHTML('beforeend', answerHTML);
-}else{
-  let answerHTML = `
-  <p class="text-sm font-bold text-yellow-400">未回答</p>
-  <p class="text-xs text-yellow-400">期限<?= $deadline ;?></p>
-  `
-  answer[i].insertAdjacentHTML('beforeend', answerHTML);
+// if(testTrue[i].firstElementChild.classList.contains("hidden_true") == true){
+//   let answerHTML = `
+//   <p class="text-sm font-bold text-green-400">参加</p>`
+//   answer[i].insertAdjacentHTML('beforeend', answerHTML);
+// }else if(testFalse[i].firstElementChild.classList.contains("hidden_false") == true){
+//   let answerHTML = `
+//   <p class="text-sm font-bold text-gray-300">不参加</p>
+//   `
+//   answer[i].insertAdjacentHTML('beforeend', answerHTML);
+// }else{
+//   let deadlines = document.querySelectorAll(".deadline");
+//   console.log(deadlines);
+//   let answerHTML = `
+//   <p class="text-sm font-bold text-yellow-400">未回答</p>
+//   <p class="text-xs text-yellow-400">期限${[...deadlines][i]}</p>
+//   `
+//   answer[i].insertAdjacentHTML('beforeend', answerHTML);
+// }
+if(answer[i].firstElementChild.classList.contains("done") == false){
+  answer[i].insertAdjacentHTML("beforeend",`<p class="text-sm font-bold text-yellow-400">未回答</p>`);
+    const deadlines = document.querySelectorAll(".deadline");
+    deadlines[i].style.display = "block";
+  
 }
 }
 
 
 for (let i = 0; i < openModalClassList.length; i++) {
-if(testTrue[i].firstElementChild.classList.contains("hidden_true") == true){
-    let counter = (testTrue[i].childElementCount) - 2 ;
+  if(nones[i].childElementCount == 0){
+    let counter = 0 ;
+    count[i].insertAdjacentHTML('beforeend', counter); 
+  }else if(answer[i].firstElementChild.classList.contains("true")){
+    let counter = (nones[i].childElementCount) - 1;
     count[i].insertAdjacentHTML('beforeend', counter); 
   }else{
-    let counter = (testTrue[i].childElementCount) -1;
-    count[i].insertAdjacentHTML('beforeend', counter);
+    let counter = (nones[i].childElementCount);
+    count[i].insertAdjacentHTML('beforeend', counter); 
   }
 }
   </script>
 </body>
-
 </html>
