@@ -8,7 +8,6 @@ if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
     exit();
 }
 
-echo $_SESSION["user_id"];
 $today = date("Y-m-d");
 
 // 参加/不参加/未回答の分類→未参加のみあとで書き加える
