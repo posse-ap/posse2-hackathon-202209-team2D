@@ -86,7 +86,6 @@ $to   = strtotime("now");
           $start_date = strtotime($event['start_at']);
           $diff = $start_date - $to;
           $deadline = floor($diff/86400) . '日';
-          // echo $diff;
           $end_date = strtotime($event['end_at']);
           $day_of_week = get_day_of_week(date("w", $start_date));
           $event_id = $event['id'];
@@ -102,11 +101,12 @@ $to   = strtotime("now");
             <div>
             <h2 class="text-lg font-semibold">参加者</h2>
               <div class="test_true">
-            <?php foreach ($events_users as $event_user) : ?>
+            <?php foreach ($events_users as $event_user) : 
+              ?>
                 <?php if($event_user['user_id'] == $user_id) :?>
                 <input type="hidden" class="hidden_true">
-                <p><?= $event_user['name']; ?></p>
                 <?php endif; ?>
+                <p><?= $event_user['name']; ?></p>
               <?php endforeach; ?>
               <input type="hidden">
               <h2 class="text-lg font-semibold">不参加者</h2>
