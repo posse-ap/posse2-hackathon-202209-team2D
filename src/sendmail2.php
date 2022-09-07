@@ -21,13 +21,15 @@ $users = $stmt->fetchAll();
     foreach ($users as $user) {
 
         $to = $user['email'];
-        $subject = "posseイベント前日メール";
+        $event_name = $user['event_name'];
+        $subject = <<<EOT
+            ${event_name}前日リマインド 
+            EOT;        
         $body = "本文";
         $headers = ["From" => "system@posse-ap.com", "Content-Type" => "text/plain; charset=UTF-8", "Content-Transfer-Encoding" => "8bit"];
 
         $name = $user['name'];
         $date = $user['start_at'];
-        $event_name = $user['event_name'];
         $detail = $user['detail'];
         $body = <<<EOT
 {$name}さん

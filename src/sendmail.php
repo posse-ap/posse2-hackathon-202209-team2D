@@ -21,13 +21,15 @@ foreach ($events as $event) {
 foreach ($users as $user) {
 
 $to = $user['email'];
-$subject = "posseイベント前日メール" ;
+$event_name = $event['name'];
+$subject = <<<EOT
+    ${event_name}前日リマインドメール 
+    EOT;
 $body = "本文";
 $headers = ["From"=>"system@posse-ap.com", "Content-Type"=>"text/plain; charset=UTF-8", "Content-Transfer-Encoding"=>"8bit"];
 
 $name = $user['name'];
 $date = $event['start_at'];
-$event_name = $event['name'];
 $detail = $event['detail'];
 $body = <<<EOT
 {$name}さん
