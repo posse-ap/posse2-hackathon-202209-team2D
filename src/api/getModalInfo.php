@@ -1,11 +1,12 @@
 <?php
 require('../dbconnect.php');
 header('Content-Type: application/json; charset=UTF-8');
-
+session_start();
+$user_id = $_SESSION['user_id'];
 if (isset($_GET['eventId'])) {
   $eventId = htmlspecialchars($_GET['eventId']);
   try {
-    $stmt = $db->prepare('SELECT events.id, events.name, events.detail, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.id = ? GROUP BY events.id');
+    $stmt = $db->prepare('SELECT events.id, events.name, events.detail, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id LEFT JOIN users ON event_attendance.user_id = users.id WHERE events.id = ? GROUP BY events.id');
     $stmt->execute(array($eventId));
     $event = $stmt->fetch();
     
@@ -25,6 +26,7 @@ if (isset($_GET['eventId'])) {
     $array = [
       'id' => $event['id'],
       'name' => $event['name'],
+      'names' => $event['users.name'],
       'date' => date("Y年m月d日", $start_date),
       'day_of_week' => get_day_of_week(date("w", $start_date)),
       'start_at' => date("H:i", $start_date),
