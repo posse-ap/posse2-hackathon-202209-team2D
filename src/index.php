@@ -1,7 +1,6 @@
 <?php
 require('dbconnect.php');
 session_start();
-
 //ログインされていない場合は強制的にログインページにリダイレクト
 if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
     header("Location: auth/login/index.php");
@@ -9,28 +8,36 @@ if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
 }
 
 $today = date("Y-m-d");
-$stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at <= '" . $today . "' GROUP BY events.id ORDER BY events.start_at ASC" );
-$stmt->execute();
+
+// 参加/不参加/未回答の分類→未参加のみあとで書き加える
+$status = filter_input(INPUT_GET, 'status');
+if (isset($status)) {
+  if($_GET["status"] == "undefined"){
+    $stmt = $db->prepare("SELECT * FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id NOT IN(SELECT event_id FROM event_attendance where user_id = ?) ORDER BY events.start_at ASC" );
+    $stmt->execute(array($_SESSION['user_id']));
+  }else{
+    $stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at >= '" . $today . "' AND event_attendance.user_id = ? AND event_attendance.status = ? GROUP BY events.id ORDER BY events.start_at ASC" );
+    $stmt->execute(array($_SESSION['user_id'], $status));
+  }
+}else{
+  $stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at >= '" . $today . "' GROUP BY events.id ORDER BY events.start_at ASC" );
+  $stmt->execute();
+}
 $events = $stmt->fetchAll();
 
 $user_id = $_SESSION['user_id'];
 $stmt = $db->prepare("SELECT * FROM event_attendance LEFT JOIN events ON event_attendance.event_id = events.id LEFT JOIN users ON event_attendance.user_id = users.id where user_id = '$user_id' AND status = 1");
 $stmt->execute();
 $events_own = $stmt->fetchAll();
-
 function get_day_of_week ($w) {
   $day_of_week_list = ['日', '月', '火', '水', '木', '金', '土'];
   return $day_of_week_list["$w"];
 }
-
 date_default_timezone_set('Asia/Tokyo');
 $to   = strtotime("now");   
-
 ?>
-
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -40,7 +47,7 @@ $to   = strtotime("now");
 </head>
 
 <body>
-  <!-- <header class="h-16">
+  <header class="h-16">
     <div class="flex justify-between items-center w-full h-full mx-auto pl-2 pr-5">
       <div class="h-full">
         <img src="img/header-logo.png" alt="" class="h-full">
@@ -49,7 +56,10 @@ $to   = strtotime("now");
               <a class="text-white bg-blue-400 px-4 py-2 rounded-3xl bg-gradient-to-r from-blue-600 to-blue-200" href="auth/login/logout.php">ログアウト</a>
       </div>     
     </div>
-  </header> -->
+  </header>
+  <?php if ($_SESSION['role_id'] == 2): ?>
+                <a href="admin/index.php" class="text-white bg-blue-400 px-4 py-2 rounded-3xl posse-blue-gradation ">管理画面へ</a>
+  <?php endif; ?>
 
   <main class="bg-gray-100">
     <div class="w-full mx-auto p-5">
