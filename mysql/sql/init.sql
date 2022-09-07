@@ -25,7 +25,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `events` (
   `id` int NOT NULL,
   `name` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
-  `detail` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `detail` varchar(255) COLLATE utf8_unicode_ci,
   `start_at` datetime DEFAULT NULL,
   `end_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
