@@ -9,7 +9,7 @@ if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
 }
 
 $today = date("Y-m-d");
-$stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at >= '" . $today . "' GROUP BY events.id,events.name,events.start_at,events.end_at,event_attendance.id ORDER BY events.start_at ASC" );
+$stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at <= '" . $today . "' GROUP BY events.id,events.name,events.start_at,events.end_at,event_attendance.id ORDER BY events.start_at ASC" );
 $stmt->execute();
 $events = $stmt->fetchAll();
 

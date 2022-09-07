@@ -50,20 +50,21 @@ CREATE TABLE `event_attendance` (
   `user_id` int DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deleted_at` datetime DEFAULT NULL
+  `deleted_at` datetime DEFAULT NULL,
+  `status` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 
 --
 -- テーブルのデータのダンプ `event_attendance`
 --
 
-INSERT INTO `event_attendance` (`id`, `event_id`, `user_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, NULL, '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL),
-(2, 1, NULL, '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL),
-(3, 1, NULL, '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL),
-(4, 2, NULL, '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL),
-(5, 2, NULL, '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL),
-(6, 3, NULL, '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL);
+INSERT INTO `event_attendance` (`id`, `event_id`, `user_id`, `created_at`, `updated_at`, `deleted_at`, `status`) VALUES
+(1, 1, 0, '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL, 1),
+(2, 1, 1, '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL, 2),
+(3, 1, 2, '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL, 1),
+(4, 2, 0, '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL, 2),
+(5, 2, 1, '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL, 1),
+(6, 3, 2, '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -85,8 +86,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `login_pass`, `slack_id`, `github_id`) VALUES
-(1, 'かしけん', 'kashiken@kashiken', '$2y$10$7EYUohG.DqNb.tLpvvub9esviI3baz3y/p01YsmD/cRaKUS6/ZdQG', 'U0258AY7KBR', 'kashiken4869');
-(2, 'かれん', 'karen@kk', '$2y$10$7EYUohG.DqNb.tLpvvub9esviI3baz3y/p01YsmD/cRaKUS6/ZdQG', 'U0258AY7KBR', 'karen-kk');
+(1, 'かしけん', 'kashiken@kashiken', '$2y$10$7EYUohG.DqNb.tLpvvub9esviI3baz3y/p01YsmD/cRaKUS6/ZdQG', 'U0258AY7KBR', 'kashiken4869'),
+(2, 'かれん', 'karen@kk', '$2y$10$7EYUohG.DqNb.tLpvvub9esviI3baz3y/p01YsmD/cRaKUS6/ZdQG', 'U0258AY7KBR', 'karen-kk'),
 (3, 'ポンタ', 'ponta@p', '$2y$10$7EYUohG.DqNb.tLpvvub9esviI3baz3y/p01YsmD/cRaKUS6/ZdQG', 'U0258AY7KBR', 'ponta10');
 
 --
