@@ -1,5 +1,6 @@
 <?php
 require('dbconnect.php');
+
 session_start();
 //ログインされていない場合は強制的にログインページにリダイレクト
 if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
