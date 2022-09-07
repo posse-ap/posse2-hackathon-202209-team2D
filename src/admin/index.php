@@ -30,6 +30,7 @@ if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
         <p class="ml-5 my-5" ><?= $_SESSION['name'] ?> さん</p>
         <a href="../index.php" class="text-white bg-blue-400 px-4 py-2 rounded-3xl posse-blue-gradation ">ユーザー画面へ</a>
         <a class="text-2xl text-white bg-pink-400 px-4 py-2 rounded-3xl posse-blue-gradation" href="register_user.php">ユーザー登録</a>
+        <a class="text-2xl text-white bg-blue-400 px-4 py-2 rounded-3xl posse-blue-gradation" href="register_event.php">イベント登録</a>
     </div>
 
 
