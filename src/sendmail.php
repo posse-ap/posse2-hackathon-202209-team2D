@@ -1,6 +1,5 @@
 <?php
 require('dbconnect.php');
-
 date_default_timezone_set('Asia/Tokyo');
 mb_language('ja');
 mb_internal_encoding('UTF-8');
@@ -22,28 +21,30 @@ foreach ($events as $event) {
 foreach ($users as $user) {
 
 $to = $user['email'];
-$subject = "posseイベント前日メール" ;
+$event_name = $event['name'];
+$subject = <<<EOT
+    ${event_name}前日リマインドメール 
+    EOT;
 $body = "本文";
 $headers = ["From"=>"system@posse-ap.com", "Content-Type"=>"text/plain; charset=UTF-8", "Content-Transfer-Encoding"=>"8bit"];
 
 $name = $user['name'];
 $date = $event['start_at'];
-$event_name = $event['name'];
 $detail = $event['detail'];
 $body = <<<EOT
 {$name}さん
 
-${date}に${event_name}を開催します。
 
-イベント内容↓↓↓
+明日の ${date}に ${event_name}を開催します。
+
+【イベント内容】
 ${detail}
 
-ぜひ来てください！！！
 
+ぜひ来てください！！！
 EOT;
 
 mb_send_mail($to, $subject, $body, $headers);
 }
 }
 echo "メールを送信しました";
-
