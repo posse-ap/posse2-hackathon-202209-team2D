@@ -208,15 +208,11 @@ async function openModal(eventId,index) {
       <h2 class="text-md font-bold mb-3">${event.name}</h2>
       <p class="text-sm">${event.date}（${event.day_of_week}）</p>
       <p class="text-sm">${event.start_at} ~ ${event.end_at}</p>
-
       <hr class="my-4">
-
       <p class="text-md">
         ${event.message}
       </p>
-
       <hr class="my-4">
-
       <p class="text-sm modal-acord"><span class="text-xl">${event.total_participants}</span>人参加 ></p>
       <div class="modal-none" style="display:none;">
         ${testTrue[index].innerHTML}
@@ -348,4 +344,3 @@ if(testTrue[i].firstElementChild.classList.contains("hidden_true") == true){
 </body>
 
 </html>
-
