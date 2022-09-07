@@ -48,7 +48,7 @@ $to   = strtotime("now");
 </head>
 
 <body>
-  <!-- <header class="h-16">
+  <header class="h-16">
     <div class="flex justify-between items-center w-full h-full mx-auto pl-2 pr-5">
       <div class="h-full">
         <img src="img/header-logo.png" alt="" class="h-full">
@@ -57,7 +57,10 @@ $to   = strtotime("now");
               <a class="text-white bg-blue-400 px-4 py-2 rounded-3xl bg-gradient-to-r from-blue-600 to-blue-200" href="auth/login/logout.php">ログアウト</a>
       </div>     
     </div>
-  </header> -->
+  </header>
+  <?php if ($_SESSION['role_id'] == 2): ?>
+                <a href="admin/index.php" class="text-white bg-blue-400 px-4 py-2 rounded-3xl posse-blue-gradation ">管理画面へ</a>
+  <?php endif; ?>
 
   <main class="bg-gray-100">
     <div class="w-full mx-auto p-5">
