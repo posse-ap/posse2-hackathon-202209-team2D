@@ -2,6 +2,7 @@
 -- CREATE SCHEMA posse;
 -- USE posse;
 
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -25,7 +26,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `events` (
   `id` int NOT NULL,
   `name` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
-  `detail` varchar(255) COLLATE utf8_unicode_ci,
+  `detail` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `start_at` datetime DEFAULT NULL,
   `end_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -61,7 +62,10 @@ INSERT INTO `events` (`id`, `name`, `detail`, `start_at`, `end_at`, `created_at`
 (21, 'ハッカソン', '', '2022-10-01 10:00:00', '2022-10-01 22:00:00', '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL),
 (22, '遊び', '', '2022-10-01 18:00:00', '2022-10-01 22:00:00', '2022-09-06 12:20:48', '2022-09-06 12:20:48', NULL),
 (23, 'かれんちで宅飲み', '', '2022-09-08 15:31:00', '2022-09-08 15:31:00', '2022-09-07 15:31:27', '2022-09-07 06:37:03', NULL),
-(24, 'おのかん家は快適？', '', '2022-09-08 15:35:00', '2022-09-08 18:35:00', '2022-09-07 15:35:42', '2022-09-07 06:35:42', NULL);
+(24, 'おのかん家は快適？', '', '2022-09-08 15:35:00', '2022-09-08 18:35:00', '2022-09-07 15:35:42', '2022-09-07 06:35:42', NULL),
+(25, 'all期生イベント', NULL, '2022-09-07 15:59:00', '2022-09-07 16:59:00', '2022-09-07 15:59:18', '2022-09-07 06:59:18', NULL),
+(42, 'サイゼリヤ食べ放題', NULL, '2022-09-08 16:27:00', '2022-09-08 17:27:00', '2022-09-07 16:28:05', '2022-09-07 07:28:05', NULL),
+(43, '二次会＠料理倶楽部', '料理倶楽部で二次会します。\r\nシンプルに楽しいと思います。', '2022-09-08 16:44:00', '2022-09-08 18:44:00', '2022-09-07 16:44:50', '2022-09-07 07:44:50', NULL);
 
 -- --------------------------------------------------------
 
@@ -149,7 +153,7 @@ ALTER TABLE `users`
 -- テーブルの AUTO_INCREMENT `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- テーブルの AUTO_INCREMENT `event_attendance`
