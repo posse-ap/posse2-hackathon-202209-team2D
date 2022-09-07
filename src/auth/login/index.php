@@ -5,7 +5,7 @@ session_start();
 if (isset($_POST["submit"])) {
   try {
     $db = new PDO("$dsn", "$user", "$password");
-    $stmt = $db->prepare('SELECT id, name, email, login_pass FROM users WHERE email = :email limit 1');
+    $stmt = $db->prepare('SELECT id, name, email, login_pass, role_id FROM users WHERE email = :email limit 1');
     $email = $_POST['email'];
     $stmt->bindValue(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
@@ -14,6 +14,7 @@ if (isset($_POST["submit"])) {
     if (password_verify($_POST['pass'], $result['login_pass'])) {
       session_regenerate_id(TRUE); //セッションidを再発行
       $_SESSION["user_id"] = $result["id"];
+      $_SESSION["role_id"] = $result["role_id"];
       $_SESSION['name'] = $result['name'];
       $_SESSION["login"] = $_POST['email']; //セッションにログイン情報を登録
       header('Location: ../../index.php');
