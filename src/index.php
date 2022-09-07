@@ -92,8 +92,8 @@ $to   = strtotime("now");
           ?>
           <div class="modal-open bg-white mb-3 p-4 flex justify-between rounded-md shadow-md cursor-pointer" id="event-<?php echo $event['id']; ?>">
             <div>
-            <h2 class="text-lg font-semibold">不参加者</h2>
-              <div class="test_false">
+            <!-- <h2 class="text-lg font-semibold">不参加者</h2> -->
+              <div class="test_false" style="display: none;">
             <?php foreach ($events_nousers as $event_nouser) : ?>
                 <?php if($event_nouser['user_id'] == $user_id) :?>
                 <input type="hidden" class="hidden_false">
@@ -135,7 +135,15 @@ $to   = strtotime("now");
                  
                 <?php endif; ?>
               </div>
-              <p class="text-sm"><span class="text-xl"><?php echo $event['total_participants']; ?></span>人参加 ></p>
+              <a class="text-sm click-acord"><span class="text-xl"><?php echo $event['total_participants']; ?></span>人参加 ></a>
+              <div class="none" style="display: none;">
+              <?php foreach ($events_users as $event_user) : ?>
+              <?php if($event_user['user_id'] == $user_id) :?>
+                <input type="hidden" class="hidden_true">
+                <?php endif;?>
+                <p><?= $event_user['name']; ?></p>
+              <?php endforeach; ?>
+              </div>
             </div>
           </div>
         <?php endforeach; ?>
@@ -152,7 +160,6 @@ $to   = strtotime("now");
           <svg class="modal-close cursor-pointer inline bg-gray-100 p-1 rounded-full" xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 18 18">
             <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
           </svg>
-          <div class="modal-acord"></div>
         </div>
 
         <div id="modalInner"></div>
@@ -172,6 +179,10 @@ const modal = document.querySelector('.modal')
 const modalInnerHTML = document.getElementById('modalInner')
 const testTrue = document.querySelectorAll(".test_true");
 const testFalse = document.querySelectorAll(".test_false");
+const answer = document.querySelectorAll('.answer');
+    const [...clickAcords] = document.querySelectorAll('.click-acord');
+    const [...nones] = document.querySelectorAll('.none');
+    const container = document.querySelector('.modal-container');
 
 for (let i = 0; i < openModalClassList.length; i++) {
   openModalClassList[i].addEventListener('click', (e) => {
@@ -206,10 +217,15 @@ async function openModal(eventId,index) {
 
       <hr class="my-4">
 
-      <p class="text-sm"><span class="text-xl">${event.total_participants}</span>人参加 ></p>
+      <p class="text-sm modal-acord"><span class="text-xl">${event.total_participants}</span>人参加 ></p>
+      <div class="modal-none" style="display:none;">
+        ${testTrue[index].innerHTML}
+      </div>
     `
-    const acord = document.querySelector('.modal-acord');
-    acord.innerHTML = testTrue[index].innerHTML;
+      // let clicks = document.querySelector('.clickAcord');
+      // console.log(clicks);
+    // const acord = document.querySelector('.modal-acord');
+    // acord.innerHTML = testTrue[index].innerHTML;
     switch (0) {
       case 0:
         modalHTML += `
@@ -251,6 +267,16 @@ async function openModal(eventId,index) {
         break;
     }
     modalInnerHTML.insertAdjacentHTML('afterbegin', modalHTML)
+    let modalAcord = document.querySelector(".modal-acord");
+    let modalNone = document.querySelector(".modal-none");
+    modalAcord.addEventListener('click', function(e){
+      e.stopPropagation();
+      if(modalNone.style.display == 'none'){
+       modalNone.style.display = "block"
+    }else{
+      modalNone.style.display = "none"
+    }
+    })
   } catch (error) {
     console.log(error)
   }
@@ -283,16 +309,23 @@ async function participateEvent(eventId) {
       return res.text();
     })
     closeModal()
-    location.reload()
   } catch (error) {
     console.log(error)
   }
 }
 
-
-    const answer = document.querySelectorAll('.answer');
 for (let i = 0; i < openModalClassList.length; i++) {
-  console.log((testTrue[i].firstElementChild));
+  clickAcords[i].addEventListener('click',function(e){
+    e.stopPropagation();
+    // modal.classList.remove('opacity-0')
+    // modal.classList.remove('pointer-events-none')
+    // body.classList.remove('modal-active')
+    if(nones[i].style.display == 'none'){
+      clickAcords[i] = nones[i].style.display = "block"
+    }else{
+      clickAcords[i] = nones[i].style.display = "none"
+    }
+  })
 if(testTrue[i].firstElementChild.classList.contains("hidden_true") == true){
   let answerHTML = `
   <p class="text-sm font-bold text-green-400">参加</p>`
