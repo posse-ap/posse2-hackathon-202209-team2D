@@ -92,22 +92,22 @@ $to   = strtotime("now");
           ?>
           <div class="modal-open bg-white mb-3 p-4 flex justify-between rounded-md shadow-md cursor-pointer" id="event-<?php echo $event['id']; ?>">
             <div>
-            <h2 class="text-lg font-semibold">参加者</h2>
-              <div class="test_true">
-            <?php foreach ($events_users as $event_user) : ?>
-                <?php if($event_user['user_id'] == $user_id) :?>
-                <input type="hidden" class="hidden_true">
-                <p><?= $event_user['name']; ?></p>
-                <?php endif; ?>
-              <?php endforeach; ?>
-              <input type="hidden">
-              <h2 class="text-lg font-semibold">不参加者</h2>
+            <h2 class="text-lg font-semibold">不参加者</h2>
               <div class="test_false">
-              <?php foreach ($events_nousers as $event_nouser) : ?>
+            <?php foreach ($events_nousers as $event_nouser) : ?>
                 <?php if($event_nouser['user_id'] == $user_id) :?>
                 <input type="hidden" class="hidden_false">
-                <?php endif;?>
+                <?php endif; ?>
                 <p><?= $event_nouser['name']; ?></p>
+              <?php endforeach; ?>
+              <input type="hidden">
+              <h2 class="text-lg font-semibold">参加者</h2>
+              <div class="test_true">
+              <?php foreach ($events_users as $event_user) : ?>
+                <?php if($event_user['user_id'] == $user_id) :?>
+                <input type="hidden" class="hidden_true">
+                <?php endif;?>
+                <p><?= $event_user['name']; ?></p>
               <?php endforeach; ?>
               <input type="hidden">
               </div>
@@ -152,6 +152,7 @@ $to   = strtotime("now");
           <svg class="modal-close cursor-pointer inline bg-gray-100 p-1 rounded-full" xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 18 18">
             <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
           </svg>
+          <div class="modal-acord"></div>
         </div>
 
         <div id="modalInner"></div>
@@ -160,8 +161,135 @@ $to   = strtotime("now");
     </div>
   </div>
 
-  <script src="/js/main.js"></script>
+  <!-- <script src="/js/main.js"></script> -->
   <script>
+    'use strict'
+const openModalClassList = document.querySelectorAll('.modal-open')
+const closeModalClassList = document.querySelectorAll('.modal-close')
+const overlay = document.querySelector('.modal-overlay')
+const body = document.querySelector('body')
+const modal = document.querySelector('.modal')
+const modalInnerHTML = document.getElementById('modalInner')
+const testTrue = document.querySelectorAll(".test_true");
+const testFalse = document.querySelectorAll(".test_false");
+
+for (let i = 0; i < openModalClassList.length; i++) {
+  openModalClassList[i].addEventListener('click', (e) => {
+    e.preventDefault()
+    let eventId = parseInt(e.currentTarget.id.replace('event-', ''))
+    openModal(eventId,i)
+  }, false)
+}
+
+for (var i = 0; i < closeModalClassList.length; i++) {
+  closeModalClassList[i].addEventListener('click', closeModal)
+}
+
+overlay.addEventListener('click', closeModal)
+
+
+async function openModal(eventId,index) {
+  try {
+    const url = '/api/getModalInfo.php?eventId=' + eventId
+    const res = await fetch(url)
+    const event = await res.json()
+    let modalHTML = `
+      <h2 class="text-md font-bold mb-3">${event.name}</h2>
+      <p class="text-sm">${event.date}（${event.day_of_week}）</p>
+      <p class="text-sm">${event.start_at} ~ ${event.end_at}</p>
+
+      <hr class="my-4">
+
+      <p class="text-md">
+        ${event.message}
+      </p>
+
+      <hr class="my-4">
+
+      <p class="text-sm"><span class="text-xl">${event.total_participants}</span>人参加 ></p>
+    `
+    const acord = document.querySelector('.modal-acord');
+    acord.innerHTML = testTrue[index].innerHTML;
+    switch (0) {
+      case 0:
+        modalHTML += `
+          <div class="text-center mt-6">
+            <!--
+            <p class="text-lg font-bold text-yellow-400">未回答</p>
+            <p class="text-xs text-yellow-400">期限 ${event.deadline}</p>
+            -->
+          </div>
+          <div class="flex mt-5">
+          `
+          if(testTrue[index].firstElementChild.classList.contains("hidden_true") == true){
+            modalHTML += `
+            <button class="flex-1 bg-gray-300 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId})" disabled>参加する</button>
+            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold">参加しない</button>
+          </div>
+        `
+          }else if(testFalse[index].firstElementChild.classList.contains("hidden_false") == true){
+            modalHTML += `
+            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId})">参加する</button>
+            <button class="flex-1 bg-gray-300 py-2 mx-3 rounded-3xl text-white text-lg font-bold" disabled>参加しない</button>
+          </div>
+        `
+          }
+        break;
+      case 1:
+        modalHTML += `
+          <div class="text-center mt-10">
+            <p class="text-xl font-bold text-gray-300">不参加</p>
+          </div>
+        `
+        break;
+      case 2:
+        modalHTML += `
+          <div class="text-center mt-10">
+            <p class="text-xl font-bold text-green-400">参加</p>
+          </div>
+        `
+        break;
+    }
+    modalInnerHTML.insertAdjacentHTML('afterbegin', modalHTML)
+  } catch (error) {
+    console.log(error)
+  }
+  toggleModal()
+}
+
+function closeModal() {
+  modalInnerHTML.innerHTML = ''
+  toggleModal()
+}
+
+function toggleModal() {
+  modal.classList.toggle('opacity-0')
+  modal.classList.toggle('pointer-events-none')
+  body.classList.toggle('modal-active')
+}
+
+async function participateEvent(eventId) {
+  try {
+    let formData = new FormData();
+    formData.append('eventId', eventId)
+    const url = '/api/postEventAttendance.php'
+    await fetch(url, {
+      method: 'POST',
+      body: formData
+    }).then((res) => {
+      if(res.status !== 200) {
+        throw new Error("system error");
+      }
+      return res.text();
+    })
+    closeModal()
+    location.reload()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
     const answer = document.querySelectorAll('.answer');
 for (let i = 0; i < openModalClassList.length; i++) {
   console.log((testTrue[i].firstElementChild));
@@ -182,6 +310,7 @@ if(testTrue[i].firstElementChild.classList.contains("hidden_true") == true){
   answer[i].insertAdjacentHTML('beforeend', answerHTML);
 }
 }
+
   </script>
 </body>
 
