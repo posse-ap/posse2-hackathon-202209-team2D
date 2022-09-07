@@ -246,16 +246,21 @@ async function openModal(eventId,index) {
           `
           if(testTrue[index].firstElementChild.classList.contains("hidden_true") == true){
             modalHTML += `
-            <button class="flex-1 bg-gray-300 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId})" disabled>参加する</button>
-            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold">参加しない</button>
+            <button class="flex-1 bg-gray-300 py-2 mx-3 rounded-3xl text-white text-lg font-bold" disabled>参加する</button>
+            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId},'update2')">参加しない</button>
           </div>
         `
           }else if(testFalse[index].firstElementChild.classList.contains("hidden_false") == true){
             modalHTML += `
-            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId})">参加する</button>
+            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId},'update1')">参加する</button>
             <button class="flex-1 bg-gray-300 py-2 mx-3 rounded-3xl text-white text-lg font-bold" disabled>参加しない</button>
           </div>
         `
+          }else{
+            modalHTML += `
+            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId},'insert')">参加する</button>
+            <button class="flex-1 bg-blue-500 py-2 mx-3 rounded-3xl text-white text-lg font-bold" onclick="participateEvent(${eventId},'delete')">参加しない</button>
+          </div>`
           }
         break;
       case 1:
@@ -301,10 +306,11 @@ function toggleModal() {
   body.classList.toggle('modal-active')
 }
 
-async function participateEvent(eventId) {
+async function participateEvent(eventId,status) {
   try {
     let formData = new FormData();
     formData.append('eventId', eventId)
+    formData.append('status', status)
     const url = '/api/postEventAttendance.php'
     await fetch(url, {
       method: 'POST',
@@ -315,6 +321,7 @@ async function participateEvent(eventId) {
       }
       return res.text();
     })
+    location.reload();
     closeModal()
   } catch (error) {
     console.log(error)
