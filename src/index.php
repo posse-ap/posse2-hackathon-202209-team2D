@@ -135,7 +135,7 @@ $to   = strtotime("now");
                  
                 <?php endif; ?>
               </div>
-              <a class="text-sm click-acord"><span class="text-xl"><?php echo $event['total_participants']; ?></span>人参加 ></a>
+              <a class="text-sm click-acord"><span class="text-xl count"></span>人参加 ></a>
               <div class="none" style="display: none;">
               <?php foreach ($events_users as $event_user) : ?>
               <?php if($event_user['user_id'] == $user_id) :?>
@@ -340,6 +340,16 @@ if(testTrue[i].firstElementChild.classList.contains("hidden_true") == true){
 }
 }
 
+const count = document.querySelectorAll('.count');
+for (let i = 0; i < openModalClassList.length; i++) {
+if(testTrue[i].firstElementChild.classList.contains("hidden_true") == true){
+    let counter = (testTrue[i].childElementCount) - 2 ;
+    count[i].insertAdjacentHTML('beforeend', counter); 
+  }else{
+    let counter = (testTrue[i].childElementCount) -1;
+    count[i].insertAdjacentHTML('beforeend', counter);
+  }
+}
   </script>
 </body>
 
