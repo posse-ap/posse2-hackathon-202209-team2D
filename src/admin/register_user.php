@@ -26,9 +26,9 @@ $stmt->execute(array(':email' => $_POST['email'], ':name' => $_POST['name'], ':l
     die();
 }
 
-// if($_POST['email'] != null) {
-//     header("Location: register_done.php"); 
-// }
+if($_POST['email'] != null) {
+    header("Location: register_done.php"); 
+}
 
 ?>
 
@@ -44,7 +44,7 @@ $stmt->execute(array(':email' => $_POST['email'], ':name' => $_POST['name'], ':l
   <main class="bg-gray-100 h-screen">
     <div class="w-full mx-auto py-10 px-5">
       <h2 class="text-md font-bold mb-5">ユーザー登録</h2>
-      <form class="flex flex-col" action="register_done.php" method="POST">
+      <form class="flex flex-col" action="" method="POST">
         <input type="text" name="email" placeholder="メールアドレス" class="w-full p-4 text-sm mb-3" required>
         <input type="text" name="name" placeholder="名前" class="w-full p-4 text-sm mb-3" required>
         <input type="password" name="pass" placeholder="パスワード" class="w-full p-4 text-sm mb-3" required>

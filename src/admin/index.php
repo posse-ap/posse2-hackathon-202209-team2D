@@ -22,11 +22,12 @@ if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
 
 <body>
     <header>
-        <h1 class="text-2xl m-3 font-bold">
+        <h1 class="ml-5 my-3text-2xl m-3 font-bold">
             管理者画面
         </h1>
     </header>
     <div class="m-6">
+        <p class="ml-5 my-5" ><?= $_SESSION['name'] ?> さん</p>
         <a href="../index.php" class="text-white bg-blue-400 px-4 py-2 rounded-3xl posse-blue-gradation ">ユーザー画面へ</a>
         <a class="text-2xl text-white bg-pink-400 px-4 py-2 rounded-3xl posse-blue-gradation" href="register_user.php">ユーザー登録</a>
     </div>
