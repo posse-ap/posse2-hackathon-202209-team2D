@@ -34,7 +34,7 @@ services:
   mailhog:
     image: mailhog/mailhog
     ports:
-      - "8025:8025"
+      - "8024:8025"
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     depends_on:
