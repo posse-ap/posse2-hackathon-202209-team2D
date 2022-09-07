@@ -180,6 +180,7 @@ const modalInnerHTML = document.getElementById('modalInner')
 const testTrue = document.querySelectorAll(".test_true");
 const testFalse = document.querySelectorAll(".test_false");
 const answer = document.querySelectorAll('.answer');
+const count = document.querySelectorAll('.count');
     const [...clickAcords] = document.querySelectorAll('.click-acord');
     const [...nones] = document.querySelectorAll('.none');
     const container = document.querySelector('.modal-container');
@@ -213,7 +214,7 @@ async function openModal(eventId,index) {
         ${event.message}
       </p>
       <hr class="my-4">
-      <p class="text-sm modal-acord"><span class="text-xl">${event.total_participants}</span>人参加 ></p>
+      <p class="text-sm modal-acord"><span class="text-xl">${count[index].innerHTML}</span>人参加 ></p>
       <div class="modal-none" style="display:none;">
         ${testTrue[index].innerHTML}
       </div>
@@ -340,7 +341,7 @@ if(testTrue[i].firstElementChild.classList.contains("hidden_true") == true){
 }
 }
 
-const count = document.querySelectorAll('.count');
+
 for (let i = 0; i < openModalClassList.length; i++) {
 if(testTrue[i].firstElementChild.classList.contains("hidden_true") == true){
     let counter = (testTrue[i].childElementCount) - 2 ;
