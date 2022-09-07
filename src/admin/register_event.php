@@ -24,7 +24,8 @@ session_start();
             <h2 class="text-md font-bold mb-5">イベント登録登録</h2>
             <form class="flex flex-col" action="../store.php" method="POST">
                 <input type="text" name="name" placeholder="イベント名" class="w-full p-4 text-sm mb-3" required>
-                <input type="textarea" name="detail" placeholder="イベント内容" class="w-full p-4 text-sm mb-2 h-14 rounded">
+                <p class="mb-0 mt-3">イベント内容</p>
+                <textarea class="w-full p-4 text-sm mb-4 rounded" name="detail" rows="7" cols="150"></textarea>
                 <p class="mb-0 mt-3">開始日時</p>
                 <input name="start_at" placeholder="<?php echo date('Y-m-d H:i:s'); ?>" class="w-full p-4 text-sm mb-3"  type="datetime-local" required>
                 <p class="mb-0 mt-3">終了日時</p>
