@@ -61,3 +61,33 @@ $resultEmail   = httpRequest('get', "https://api.github.com/user/emails", null, 
 $resJsonEmails = json_decode($resultEmail, true);
 $git_email = $resJsonEmails[0]['email'];
 
+
+// ログイン処理
+$sql = "SELECT * FROM users WHERE email = :email";
+$stmt = $db->prepare($sql);
+$stmt->bindValue(':email', $git_email);
+$stmt->execute();
+$member = $stmt->fetch();
+// var_dump($member);
+
+//メールアドレスが既に登録されたものかチェック
+if ($member[0]!= 0) {
+    //DBのユーザー情報をセッションに保存
+    session_regenerate_id(TRUE); //セッションidを再発行
+    $_SESSION['user_id'] = $member['id'];
+    $_SESSION["login"] = $member['email'];
+    $_SESSION['name'] = $member['name'];
+    $_SESSION["role_id"] = $member['role_id'];
+    $msg = 'ログインしました。';
+    $link = '<a href="../../index.php">ホーム</a>';
+} else {
+    $msg = 'githubアカウントと連携しました';
+    $link = '<a href="login.php">戻る</a>';
+    // 新規登録
+    $stmt = $db->prepare("INSERT INTO users (id, email, name, login_pass, slack_id, github_id, role_id) VALUES (:id, :email, :name, :login_pass, :slack_id, :github_id, :role_id)");
+    $stmt->execute(array(':id' => 7, ':email' => $git_email, ':name' => $git_name, ':login_pass' => password_hash('password', PASSWORD_DEFAULT), ':slack_id' => 123456, ':github_id' => $git_id,  ':role_id' =>1));
+}
+?>
+
+<h1><?php echo $msg; ?></h1>
+<?php echo $link; ?>
