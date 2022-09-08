@@ -45,9 +45,10 @@ EOT;
 
     mb_send_mail($to, $subject, $body, $headers);
 
-$url = "https://hooks.slack.com/services/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";
+$url = "https://hooks.slack.com/services/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";
 
 // メッセージ
+if ( $slack_id != NULL ) {
 $message = array(
     "username"   => "POSSEイベント 前日リマインド",
     "icon_emoji" => ":slack:",
@@ -73,6 +74,7 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, $message_post);
 curl_exec($ch);
 curl_close($ch);
 
+}
 }
 
 echo "メールを送信しました";

@@ -26,6 +26,7 @@ $users = $stmt->fetchAll();
 foreach ($users as $user) {
 
     $to = $user['email'];
+    $slack_id = $user['slack_id'];
     $event_name = $user['event_name'];
     $subject = <<<EOT
     ${event_name}　3日前参加可否リマインドメール 
@@ -52,6 +53,35 @@ ${detail}
 EOT;
 
     mb_send_mail($to, $subject, $body, $headers);
+
+$url = "https://hooks.slack.com/services/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";
+
+// メッセージ
+if ( $slack_id != NULL ) {
+$message = array(
+    "username"   => "POSSEイベント 3日前リマインド",
+    "icon_emoji" => ":slack:",
+    "attachments" => array(
+        array(
+            "text" => "<@${slack_id}> \n 3日後に「${event_name}」が開催されます。 \n ${date} から開催です。 \n posseアプリでの参加可否が未回答の方にむけたリマインドの通知です。\n 今すぐ下記リンクより参加可否の登録お願いします！！ \n https://event.posse-ap.com/login \n 【イベント内容】\n ${detail} "            
+        )
+    )
+);
+
+$message_json = json_encode($message);
+
+// payloadの値としてURLエンコード
+$message_post = "payload=".urlencode($message_json);
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $message_post);
+curl_exec($ch);
+curl_close($ch);
+
+}
 }
 
 echo "メールを送信しました";
