@@ -78,16 +78,12 @@ if ($member[0]!= 0) {
     $_SESSION["login"] = $member['email'];
     $_SESSION['name'] = $member['name'];
     $_SESSION["role_id"] = $member['role_id'];
-    $msg = 'ログインしました。';
-    $link = '<a href="../../index.php">ホーム</a>';
+    echo '<h1>ログインしました。</h1>';
+    echo '<a href="../../index.php">ホーム</a>';
 } else {
-    $msg = 'githubアカウントと連携しました';
-    $link = '<a href="login.php">戻る</a>';
-    // 新規登録
+    echo '<h1>githubアカウントと連携しました</h1>';
+    echo '<a href="../../index.php">もう一度login with githubを押してログインしてください</a>';
+    // 新規登録 slack_idをnullでもOKにしてほしい
     $stmt = $db->prepare("INSERT INTO users (id, email, name, login_pass, slack_id, github_id, role_id) VALUES (:id, :email, :name, :login_pass, :slack_id, :github_id, :role_id)");
     $stmt->execute(array(':id' => 7, ':email' => $git_email, ':name' => $git_name, ':login_pass' => password_hash('password', PASSWORD_DEFAULT), ':slack_id' => 123456, ':github_id' => $git_id,  ':role_id' =>1));
 }
-?>
-
-<h1><?php echo $msg; ?></h1>
-<?php echo $link; ?>
