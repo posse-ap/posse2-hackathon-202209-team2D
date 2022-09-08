@@ -66,6 +66,8 @@ if (isset($_POST["submit"])) {
       </form>
       <div class="text-center text-xs text-gray-400 mt-6">
         <a href="reset.php">パスワードを忘れた方はこちら</a>
+        <!-- 1. Githubログインページへの遷移 -->
+        <a href="https://github.com/login/oauth/authorize?client_id=21099cba3a90e21d4f87&scope=user:email">|      Log in with GitHub</a>
       </div>
     </div>
   </main>
