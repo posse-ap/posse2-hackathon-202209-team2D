@@ -54,7 +54,6 @@ $resultUser = httpRequest('get', "https://api.github.com/user", null, ["Authoriz
 $resJsonUser = json_decode($resultUser, true);
 // var_dump($resJsonUser);
 $git_id = $resJsonUser["login"];
-$git_name = $resJsonUser["name"];
 
 //  APIでユーザのEmail情報を取得→返却値をJsonでデコード
 $resultEmail   = httpRequest('get', "https://api.github.com/user/emails", null, ["Authorization: Token " . $resJsonAT['access_token']]);
@@ -63,9 +62,9 @@ $git_email = $resJsonEmails[0]['email'];
 
 
 // ログイン処理
-$sql = "SELECT * FROM users WHERE email = :email";
+$sql = "SELECT * FROM users WHERE github_id = :github_id";
 $stmt = $db->prepare($sql);
-$stmt->bindValue(':email', $git_email);
+$stmt->bindValue(':github_id', $git_id);
 $stmt->execute();
 $member = $stmt->fetch();
 // var_dump($member);
@@ -81,9 +80,5 @@ if ($member[0]!= 0) {
     echo '<h1>ログインしました。</h1>';
     echo '<a href="../../index.php">ホーム</a>';
 } else {
-    echo '<h1>githubアカウントと連携しました</h1>';
-    echo '<a href="../../index.php">もう一度login with githubを押してログインしてください</a>';
-    // 新規登録 slack_idをnullでもOKにしてほしい
-    $stmt = $db->prepare("INSERT INTO users (id, email, name, login_pass, slack_id, github_id, role_id) VALUES (:id, :email, :name, :login_pass, :slack_id, :github_id, :role_id)");
-    $stmt->execute(array(':id' => 7, ':email' => $git_email, ':name' => $git_name, ':login_pass' => password_hash('password', PASSWORD_DEFAULT), ':slack_id' => 123456, ':github_id' => $git_id,  ':role_id' =>1));
+    echo '<h1>アカウントが見つかりませんでした。管理者に連絡し、新規登録から始めてください。</h1>';
 }
