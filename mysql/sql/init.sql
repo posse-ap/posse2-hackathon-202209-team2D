@@ -24,14 +24,14 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `events` (
   `id` int NOT NULL,
-  `name` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `detail` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `name` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `detail` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `start_at` datetime DEFAULT NULL,
   `end_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 
 --
 -- テーブルのデータのダンプ `events`
@@ -58,7 +58,7 @@ INSERT INTO `events` (`id`, `name`, `detail`, `start_at`, `end_at`, `created_at`
 (48, 'あそぼ', NULL, '2022-10-19 09:34:19', '2022-10-19 09:34:19', '2022-09-08 11:07:33', '2022-09-08 11:07:33', NULL),
 (49, 'おのかンかん', NULL, '2022-11-01 22:36:12', '2022-11-01 22:36:12', '2022-09-08 11:08:50', '2022-09-08 11:08:50', NULL),
 (50, 'ポーカー', NULL, '2022-10-19 09:34:19', '2022-10-19 09:34:19', '2022-09-08 11:08:50', '2022-09-08 11:08:50', NULL),
-(51, 'モンキーテスト', NULL, '2022-09-12 20:12:38', '2022-09-13 00:00:00', '2022-09-29 20:09:02', '2022-09-08 11:12:55', NULL),
+(51, 'モンキーテスト', NULL, '2022-09-14 20:12:38', '2022-09-14 00:00:00', '2022-09-29 20:09:02', '2022-09-08 14:47:49', NULL),
 (52, '沖縄', NULL, '2022-09-19 20:11:58', '2022-09-21 00:00:00', '2022-09-19 20:09:02', '2022-09-08 11:12:13', NULL),
 (53, 'aaaa', 'aaaa', '2022-09-09 21:41:00', '2022-09-09 22:41:00', '2022-09-08 20:41:49', '2022-09-08 11:41:49', NULL);
 
@@ -76,7 +76,7 @@ CREATE TABLE `event_attendance` (
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` datetime DEFAULT NULL,
   `status` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 
 --
 -- テーブルのデータのダンプ `event_attendance`
@@ -108,7 +108,9 @@ INSERT INTO `event_attendance` (`id`, `event_id`, `user_id`, `created_at`, `upda
 (30, 24, 3, '2022-09-08 08:46:39', '2022-09-08 08:46:39', NULL, 2),
 (31, 43, 3, '2022-09-08 09:59:00', '2022-09-08 09:59:00', NULL, 1),
 (32, 53, 1, '2022-09-08 11:41:58', '2022-09-08 11:41:58', NULL, 1),
-(33, 53, 3, '2022-09-08 11:46:49', '2022-09-08 11:46:49', NULL, 2);
+(33, 53, 3, '2022-09-08 11:46:49', '2022-09-08 11:46:49', NULL, 2),
+(34, 46, 1, '2022-09-06 12:20:48', '2022-09-07 09:26:40', NULL, 2),
+(35, 46, 2, '2022-09-06 12:20:48', '2022-09-07 09:26:40', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -118,13 +120,13 @@ INSERT INTO `event_attendance` (`id`, `event_id`, `user_id`, `created_at`, `upda
 
 CREATE TABLE `users` (
   `id` int NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `login_pass` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `slack_id` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `github_id` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `login_pass` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `slack_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `github_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `role_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 
 --
 -- テーブルのデータのダンプ `users`
@@ -174,7 +176,7 @@ ALTER TABLE `events`
 -- テーブルの AUTO_INCREMENT `event_attendance`
 --
 ALTER TABLE `event_attendance`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- テーブルの AUTO_INCREMENT `users`
