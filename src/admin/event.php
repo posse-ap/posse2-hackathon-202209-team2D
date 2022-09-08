@@ -10,14 +10,10 @@ if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
 $today = date("Y-m-d");
 
 // 参加/不参加/未回答の分類→未参加のみあとで書き加える
-  $stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at >= '" . $today . "' GROUP BY events.id ORDER BY events.start_at ASC" );
+  $stmt = $db->prepare("SELECT * FROM events WHERE events.start_at >= '" . $today . "' ORDER BY events.start_at ASC" );
   $stmt->execute();
 $events = $stmt->fetchAll();
 
-$user_id = $_SESSION['user_id'];
-$stmt = $db->prepare("SELECT * FROM event_attendance LEFT JOIN events ON event_attendance.event_id = events.id LEFT JOIN users ON event_attendance.user_id = users.id where user_id = '$user_id' AND status = 1");
-$stmt->execute();
-$events_own = $stmt->fetchAll();
 function get_day_of_week ($w) {
   $day_of_week_list = ['日', '月', '火', '水', '木', '金', '土'];
   return $day_of_week_list["$w"];
@@ -57,7 +53,7 @@ $to   = strtotime("now");
       <div id="events-list">
         <div class="flex justify-between items-center mb-3">
           <h2 class="text-sm font-bold">一覧</h2>
-        </div>
+     </div>
         <?php foreach ($events as $event) : 
                       $start_date = strtotime($event['start_at']);
                       $diff = $start_date - $to;
@@ -66,10 +62,10 @@ $to   = strtotime("now");
                       $end_date = strtotime($event['end_at']);
                       $day_of_week = get_day_of_week(date("w", $start_date));
             ?>
-            <form action="edit_event.php" action="post">
-                <input type="hidden" name="id" value="<?php echo $event['id']; ?>" />
-          <div class="modal-open bg-white mb-3 p-4 flex justify-between rounded-md shadow-md cursor-pointer" id="event-<?php echo $event['id']; ?>">
+            <form action="edit_event.php" action="GET">
+            <div class="modal-open bg-white mb-3 p-4 flex justify-between rounded-md shadow-md cursor-pointer" id="event-<?php echo $event['id']; ?>">
             <div>
+            <input type="hidden" name="event_id" value="<?php echo $event['id']; ?>" />
             <!-- <h2 class="text-lg font-semibold">不参加者</h2> -->
             </div>
               <h3 class="font-bold text-lg mb-2"><?php echo $event['name'] ?></h3>
@@ -77,12 +73,12 @@ $to   = strtotime("now");
               <p class="text-xs text-gray-600">
                 <?php echo date("H:i", $start_date) . "~" . date("H:i", $end_date); ?>
               </p>
+              <input type="submit" value="編集">
             </div>
-            <div class="flex flex-col justify-between text-right">
-            </form>
+            <div class="flex flex-col justify-between text-right">   
+        </form>
             <?php endforeach; ?>
             </div>
-          </div>
       </div>
     </div>
   </main>
