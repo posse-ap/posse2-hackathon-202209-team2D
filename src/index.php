@@ -8,20 +8,48 @@ if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
     exit();
 }
 
-$today = date("Y-m-d");
+$user_id = $_SESSION['user_id'];
+
+$today = date("Y-m-d H:i:s");
+
+$stmt = $db->prepare("SELECT count(*) FROM events WHERE events.start_at >= '" . $today . "'");
+$stmt->execute();
+$count = $stmt->fetch();
+$maxCount = ceil($count['count(*)'] / 10);
+
+
+if(isset($_GET['page']) && is_numeric($_GET['page'])) {
+  $page = $_GET['page'];
+} else {
+  $page = 1;
+}
+
+$firstCount = 10 * ($page -1);
+
+// SELECT  events.name event_name, events.start_at, users.name
+// FROM  events 
+// CROSS JOIN users
+// WHERE 
+// events.start_at >= CURDATE()
+// and not exists (
+// select * from event_attendance ea
+//     where ea.user_id = users.id
+//     and ea.event_id = events.id
+//     )  
+// ORDER BY `event_name` ASC;
 
 // 参加/不参加/未回答の分類→未参加のみあとで書き加える
 $status = filter_input(INPUT_GET, 'status');
 if (isset($status)) {
   if($_GET["status"] == "undefined"){
-    $stmt = $db->prepare("SELECT * FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id NOT IN(SELECT event_id FROM event_attendance where user_id = ?) WHERE events.start_at >= '" . $today . "' ORDER BY events.start_at ASC" );
-    $stmt->execute(array($_SESSION['user_id']));
+    $stmt = $db->prepare("SELECT * FROM events WHERE events.id NOT IN(SELECT event_id FROM event_attendance where user_id = '$user_id') AND events.start_at >= '" . $today . "' ORDER BY events.start_at ASC;");
+    $stmt->execute();
   }else{
-    $stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at >= '" . $today . "' AND event_attendance.user_id = ? AND event_attendance.status = ? GROUP BY events.id ORDER BY events.start_at ASC" );
+    $stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at >= '" . $today . "' AND event_attendance.user_id = ? AND event_attendance.status = ? GROUP BY events.id ORDER BY events.start_at ASC LIMIT $firstCount,10" );
     $stmt->execute(array($_SESSION['user_id'], $status));
   }
 }else{
-  $stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at >= '" . $today . "' GROUP BY events.id ORDER BY events.start_at ASC" );
+  $stmt = $db->prepare("SELECT events.id, events.name, events.start_at, events.end_at, count(event_attendance.id) AS total_participants FROM events LEFT JOIN event_attendance ON events.id = event_attendance.event_id WHERE events.start_at >= '" . $today . "' GROUP BY events.id ORDER BY events.start_at ASC LIMIT $firstCount,10" );
   $stmt->execute();
 }
 $events = $stmt->fetchAll();
@@ -145,6 +173,26 @@ function get_day_of_week ($w) {
             </div>
           </div>
         <?php endforeach; ?>
+        <div class="mt-3">
+        <?php if($page > 1) :?>
+          <a href="index.php?page=<?= $page-1 ;?>" class="p-1"><</a>
+          <?php else: ?>
+          <span href="#"><</span>
+          <?php endif; ?>
+          <?php 
+          for($i=0;$i < $maxCount; $i++) :?>
+          <?php if($i+1 == $page) :?>
+            <span class="p-1 bg-blue-300 text-white"><?= $i+1 ;?></span>
+          <?php else :?>
+            <a href="index.php?page=<?= $i+1 ;?>" class="p-1"><?= $i+1 ;?></a>
+          <?php endif ;?>
+          <?php endfor ;?>
+          <?php if($page < $maxCount) :?>
+          <a href="index.php?page=<?= $page+1 ;?>" class="p-1">></a>
+          <?php else: ?>
+          <span href="#">></span>
+          <?php endif; ?>
+          </div>
       </div>
     </div>
   </main>
