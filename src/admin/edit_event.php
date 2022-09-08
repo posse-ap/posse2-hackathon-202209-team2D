@@ -36,7 +36,7 @@ $event = $stmt->fetch();
                 <input name="start_at" placeholder="<?php echo date('Y-m-d H:i:s'); ?>" class="w-full p-4 text-sm mb-3"  type="datetime-local" required value="<?= $event['start_at'] ;?>">
                 <p class="mb-0 mt-3">終了日時</p>
                 <input name="end_at" placeholder="<?php echo date('Y-m-d H:i:s'); ?>" class="w-full p-4 text-sm mb-3" type="datetime-local"  required value="<?= $event['end_at'] ;?>">
-                <input type="submit" name="submit" value="登録" class="cursor-pointer w-full p-3 text-md text-white bg-blue-400 rounded-3xl bg-gradient-to-r from-blue-600 to-blue-300">
+                <input type="submit" name="submit" value="編集" class="cursor-pointer w-full p-3 text-md text-white bg-blue-400 rounded-3xl bg-gradient-to-r from-blue-600 to-blue-300">
             </form>
         </div>
     </main>
