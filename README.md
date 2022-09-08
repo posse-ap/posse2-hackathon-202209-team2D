@@ -2,7 +2,7 @@
 
 ### ログイン
 
-http://localhost/auth/login/index.php　にアクセスしusersテーブルに入っている管理者権限を持つ(role_id=2)のユーザーのメールアドレスとパスワードでログインする。
+localhost/auth/login/index.php　にアクセスしusersテーブルに入っている管理者権限を持つ(role_id=2)のユーザーのメールアドレス(kashiken@kashiken)とパスワード(pass)でログインする。
 
 ### 管理画面からイベント登録
 
