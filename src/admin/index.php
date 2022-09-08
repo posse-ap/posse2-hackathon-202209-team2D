@@ -26,12 +26,14 @@ if (!isset($_SESSION["user_id"]) || !isset($_SESSION['login'])) {
             管理者画面
         </h1>
     </header>
-    <div class="m-6">
-        <p class="ml-5 my-5" ><?= $_SESSION['name'] ?> さん</p>
-        <a href="../index.php" class="text-white bg-blue-400 px-4 py-2 rounded-3xl posse-blue-gradation ">ユーザー画面へ</a>
-        <a class="text-2xl text-white bg-pink-400 px-4 py-2 rounded-3xl posse-blue-gradation" href="register_user.php">ユーザー登録</a>
-        <a class="text-2xl text-white bg-blue-400 px-4 py-2 rounded-3xl posse-blue-gradation" href="register_event.php">イベント登録</a>
-        <a class="text-2xl text-white bg-blue-400 px-4 py-2 rounded-3xl posse-blue-gradation" href="event.php">イベント編集</a>
+    <div class="m-6" >
+        <p class="ml-5 my-5"><?= $_SESSION['name'] ?> さん</p>
+        <div class="flex flex-wrap flex-col">
+        <a href="../index.php" class="text-white bg-blue-400 px-4 py-2 rounded-3xl posse-blue-gradation mb-3">ユーザー画面へ</a>
+        <a class="text-2xl text-white bg-pink-400 px-4 py-2 rounded-3xl posse-blue-gradation mb-3" href="register_user.php">ユーザー登録</a>
+        <a class="text-2xl text-white bg-blue-400 px-4 py-2 rounded-3xl posse-blue-gradation mb-3" href="register_event.php">イベント登録</a>
+        <a class="text-2xl text-white bg-blue-400 px-4 py-2 rounded-3xl posse-blue-gradation mb-3" href="event.php">イベント編集</a>
+        </div>
     </div>
 
 
