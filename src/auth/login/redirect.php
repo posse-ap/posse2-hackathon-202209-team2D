@@ -85,5 +85,5 @@ if ($member[0]!= 0) {
     echo '<a href="../../index.php">もう一度login with githubを押してログインしてください</a>';
     // 新規登録 slack_idをnullでもOKにしてほしい
     $stmt = $db->prepare("INSERT INTO users (id, email, name, login_pass, slack_id, github_id, role_id) VALUES (:id, :email, :name, :login_pass, :slack_id, :github_id, :role_id)");
-    $stmt->execute(array(':id' => 7, ':email' => $git_email, ':name' => $git_name, ':login_pass' => password_hash('password', PASSWORD_DEFAULT), ':slack_id' => 123456, ':github_id' => $git_id,  ':role_id' =>1));
+    $stmt->execute(array(':id' => 7, ':email' => $git_email, ':name' => $git_id, ':login_pass' => password_hash('password', PASSWORD_DEFAULT), ':slack_id' => 123456, ':github_id' => $git_id,  ':role_id' =>1));
 }
