@@ -100,10 +100,26 @@ function get_day_of_week ($w) {
             <input type="hidden" value="1">
             <input type="submit" value="">
           </form> -->
-          <a href="/index.php" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-blue-600 text-white">全て</a>
-          <a href="/index.php/?status=1" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">参加</a>
-          <a href="/index.php/?status=2" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">不参加</a>
+          <?php if($status == '') :?>
+            <a href="/index.php" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-blue-600 text-white">全て</a>
+          <?php else :?>
+            <a href="/index.php" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">全て</a>
+          <?php endif ; ?>
+          <?php if($status == '1') :?>
+            <a href="/index.php/?status=1" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-blue-600 text-white">参加</a>
+          <?php else :?>
+            <a href="/index.php/?status=1" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">参加</a>
+          <?php endif ; ?>
+          <?php if($status == '2') :?>
+          <a href="/index.php/?status=2" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-blue-600 text-white">不参加</a>
+          <?php else :?>
+            <a href="/index.php/?status=2" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">不参加</a>
+          <?php endif ; ?>
+          <?php if($status == 'undefined') :?>
+          <a href="/index.php/?status=undefined" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-blue-600 text-white">未回答</a>
+          <?php else :?>
           <a href="/index.php/?status=undefined" class="px-3 py-2 text-md font-bold mr-2 rounded-md shadow-md bg-white">未回答</a>
+          <?php endif ; ?>
         </div>
       </div>
       <div id="events-list">
