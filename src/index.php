@@ -195,7 +195,7 @@ function get_day_of_week($w)
         <div class="mt-3">
           <?php if ($page > 1) : ?>
             <a href="index.php?page=<?= $page - 1; ?>" class="p-1">
-              << /a>
+              <</a>
               <?php else : ?>
                 <span href="#"><</span>
                   <?php endif; ?>
