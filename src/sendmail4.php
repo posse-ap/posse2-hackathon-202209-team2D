@@ -54,7 +54,7 @@ EOT;
 
     mb_send_mail($to, $subject, $body, $headers);
 
-$url = "https://hooks.slack.com/services/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";
+$url = "https://hooks.slack.com/services/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";
 
 // メッセージ
 if ( $slack_id != NULL ) {
