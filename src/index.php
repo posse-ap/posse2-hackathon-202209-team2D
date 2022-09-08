@@ -110,26 +110,6 @@ function get_day_of_week ($w) {
         <div class="flex justify-between items-center mb-3">
           <h2 class="text-sm font-bold">一覧</h2>
         </div>
-        <div class="mb-3">
-        <?php if($page > 1) :?>
-          <a href="index.php?page=<?= $page-1 ;?>" class="p-1"><</a>
-          <?php else: ?>
-          <span href="#"><</span>
-          <?php endif; ?>
-          <?php 
-          for($i=0;$i < $maxCount; $i++) :?>
-          <?php if($i+1 == $page) :?>
-            <span class="p-1 bg-blue-300 text-white"><?= $i+1 ;?></span>
-          <?php else :?>
-            <a href="index.php?page=<?= $i+1 ;?>" class="p-1"><?= $i+1 ;?></a>
-          <?php endif ;?>
-          <?php endfor ;?>
-          <?php if($page < $maxCount) :?>
-          <a href="index.php?page=<?= $page+1 ;?>" class="p-1">></a>
-          <?php else: ?>
-          <span href="#">></span>
-          <?php endif; ?>
-          </div>
 
         <?php foreach ($events as $event) : 
           date_default_timezone_set('Asia/Tokyo');
@@ -193,6 +173,26 @@ function get_day_of_week ($w) {
             </div>
           </div>
         <?php endforeach; ?>
+        <div class="mt-3">
+        <?php if($page > 1) :?>
+          <a href="index.php?page=<?= $page-1 ;?>" class="p-1"><</a>
+          <?php else: ?>
+          <span href="#"><</span>
+          <?php endif; ?>
+          <?php 
+          for($i=0;$i < $maxCount; $i++) :?>
+          <?php if($i+1 == $page) :?>
+            <span class="p-1 bg-blue-300 text-white"><?= $i+1 ;?></span>
+          <?php else :?>
+            <a href="index.php?page=<?= $i+1 ;?>" class="p-1"><?= $i+1 ;?></a>
+          <?php endif ;?>
+          <?php endfor ;?>
+          <?php if($page < $maxCount) :?>
+          <a href="index.php?page=<?= $page+1 ;?>" class="p-1">></a>
+          <?php else: ?>
+          <span href="#">></span>
+          <?php endif; ?>
+          </div>
       </div>
     </div>
   </main>
