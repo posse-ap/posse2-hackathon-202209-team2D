@@ -42,16 +42,16 @@ if($_POST['email'] != null) {
 <body>
 
   <main class="bg-gray-100 h-screen">
-    <div class="w-full mx-auto py-10 px-5">
+    <div class="w-full mx-auto py-10 px-5 h-screen">
       <h2 class="text-md font-bold mb-5">ユーザー登録</h2>
-      <form class="flex flex-col" action="" method="POST">
-        <input type="text" name="email" placeholder="メールアドレス" class="w-full p-4 text-sm mb-3" required>
-        <input type="text" name="name" placeholder="名前" class="w-full p-4 text-sm mb-3" required>
-        <input type="password" name="pass" placeholder="パスワード" class="w-full p-4 text-sm mb-3" required>
-        <input type="text" name="slack_id" placeholder="slack_id" class="w-full p-4 text-sm mb-3" required>
-        <input type="text" name="github_id" placeholder="github_id" class="w-full p-4 text-sm mb-3" required>
-        <input type="int" name="role_id" placeholder="管理者権限を付与する場合は2、それ以外は1" class="w-full p-4 text-sm mb-3" required>
-        <input type="submit" name="submit" value="登録" class="cursor-pointer w-full p-3 text-md text-white bg-blue-400 rounded-3xl bg-gradient-to-r from-blue-600 to-blue-300">
+      <form class="flex flex-col h-full" action="" method="POST">
+        <input type="text" name="email" placeholder="メールアドレス" class="w-full h-24 p-4 text-3xl mb-6 h-32" required>
+        <input type="text" name="name" placeholder="名前" class="w-full p-4 text-3xl mb-6 h-32" required>
+        <input type="password" name="pass" placeholder="パスワード" class="w-full p-4 text-3xl mb-6 h-32" required>
+        <input type="text" name="slack_id" placeholder="slack_id" class="w-full p-4 text-3xl mb-6 h-32" required>
+        <input type="text" name="github_id" placeholder="github_id" class="w-full p-4 text-3xl mb-6 h-32" required>
+        <input type="int" name="role_id" placeholder="管理者権限を付与する場合は2、それ以外は1" class="w-full p-4 text-3xl mb-6 h-32" required>
+        <input type="submit" name="submit" value="登録" class="cursor-pointer w-full p-3 text-xl text-white bg-blue-400 rounded-3xl bg-gradient-to-r from-blue-600 to-blue-300 h-24">
       </form>
     </div>
   </main>
